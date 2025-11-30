@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <title>PDF Editor – Beta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/editor.css" />
+
+  <!-- PDF.js (viewer) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"
+    defer
+  ></script>
+
+  <!-- pdf-lib (for editing / saving) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
+    defer
+  ></script>
+
+  <!-- Later: tesseract.js, jszip, etc. -->
+  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/editor-core.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">PDF<span>Suite</span></div>
+      <nav class="main-nav">
+        <a href="#">Tools</a>
+        <a href="#">Blog</a>
+        <a href="#">Help</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        🌓
+      </button>
+    </div>
+  </header>
+
+  <main class="editor-shell">
+    <!-- Left: Pages sidebar -->
+    <aside class="panel panel-pages">
+      <div class="panel-header">
+        <span>Pages</span>
+        <button id="add-page-btn" class="btn-ghost">+ Add</button>
+      </div>
+      <div id="pages-list" class="pages-list">
+        <!-- Thumbnails will be injected here -->
+        <div class="empty-hint">Open a PDF to see pages.</div>
+      </div>
+    </aside>
+
+    <!-- Center: Canvas area -->
+    <section class="panel panel-canvas">
+      <div class="canvas-toolbar">
+        <label class="file-input-label">
+          <input type="file" id="file-input" accept="application/pdf" hidden />
+          <span>📂 Open PDF</span>
+        </label>
+
+        <div class="canvas-toolbar-group">
+          <button class="btn-ghost" id="zoom-out-btn">−</button>
+          <span id="zoom-label">100%</span>
+          <button class="btn-ghost" id="zoom-in-btn">+</button>
+        </div>
+
+        <div class="canvas-toolbar-group">
+          <button class="btn-ghost" id="undo-btn" disabled>Undo</button>
+          <button class="btn-ghost" id="redo-btn" disabled>Redo</button>
+        </div>
+
+        <button class="btn-primary" id="download-btn" disabled>
+          ⬇ Download PDF
+        </button>
+      </div>
+
+      <div id="canvas-wrapper" class="canvas-wrapper">
+        <div class="drop-hint" id="drop-hint">
+          <p><strong>Drop a PDF here</strong> or click “Open PDF”</p>
+          <p>All processing happens in your browser only.</p>
+        </div>
+        <canvas id="pdf-canvas"></canvas>
+        <!-- Later: overlay layer(s) for text, shapes, etc. -->
+        <div id="overlay-layer" class="overlay-layer"></div>
+      </div>
+    </section>
+
+    <!-- Right: Tools sidebar -->
+    <aside class="panel panel-tools">
+      <div class="panel-header">
+        <span>Tools</span>
+      </div>
+
+      <div class="tools-tabs">
+        <button class="tool-tab active" data-tab="edit">Edit</button>
+        <button class="tool-tab" data-tab="pages">Pages</button>
+        <button class="tool-tab" data-tab="convert">Convert</button>
+        <button class="tool-tab" data-tab="compress">Compress</button>
+      </div>
+
+      <div class="tools-body">
+        <!-- Edit tab -->
+        <div class="tools-panel active" data-panel="edit">
+          <button class="tool-btn" data-tool="add-text">Add Text</button>
+          <button class="tool-btn" data-tool="highlight">Highlight</button>
+          <button class="tool-btn" data-tool="draw">Draw / Sign</button>
+          <button class="tool-btn" data-tool="add-image">Add Image</button>
+        </div>
+
+        <!-- Pages tab -->
+        <div class="tools-panel" data-panel="pages">
+          <button class="tool-btn" data-tool="reorder">Reorder Pages</button>
+          <button class="tool-btn" data-tool="delete-page">Delete Page</button>
+          <button class="tool-btn" data-tool="rotate-page">Rotate Page</button>
+          <button class="tool-btn" data-tool="duplicate-page">Duplicate</button>
+        </div>
+
+        <!-- Convert tab -->
+        <div class="tools-panel" data-panel="convert">
+          <button class="tool-btn" data-tool="pdf-to-image">PDF → Images</button>
+          <button class="tool-btn" data-tool="image-to-pdf">Images → PDF</button>
+          <button class="tool-btn" data-tool="pdf-to-text">PDF → Text</button>
+          <button class="tool-btn" data-tool="ocr">OCR (Scanned → Text)</button>
+        </div>
+
+        <!-- Compress tab -->
+        <div class="tools-panel" data-panel="compress">
+          <label class="field-label">Quality</label>
+          <select id="compress-quality">
+            <option value="high">High (bigger file)</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low (smallest file)</option>
+          </select>
+          <button class="tool-btn" data-tool="compress-now">Compress PDF</button>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <small>Beta – local processing only.</small>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>
